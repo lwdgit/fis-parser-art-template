@@ -24,4 +24,4 @@ fis.config.set('roadmap.ext.tpl', 'html');
 
 ## example 
 
-see [example](https://github.com/lwdgit/fis-parser-art-template/example/ '')
+see [example](https://github.com/lwdgit/fis-parser-art-template/tree/master/example '')
