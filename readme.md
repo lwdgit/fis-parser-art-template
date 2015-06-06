@@ -1,10 +1,10 @@
 #fis-parser-art-template
 
-> a fis parser for art-template
+> A fis parser plugin for art-template
 
 ## install
 
-> npm install fis-parser-art-template
+   $ npm install fis-parser-art-template
 
 
 ##usage
@@ -20,7 +20,7 @@ fis.config.set('roadmap.ext.tpl', 'html');
 
 ```
 
-> fis release -d ./output
+  $ fis release -d ./output
 
 ## example 
 
