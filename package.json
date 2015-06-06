@@ -1,0 +1,20 @@
+{
+  "name": "fis-parser-artTemplate",
+  "description": "A parser for fis to compile artTemplate file.",
+  "version": "0.1.2",
+  "author": {
+    "name": "liwen",
+    "email": "1127622940@qq.com"
+  },
+  "keywords": [
+    "fis"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "dependencies": {
+    "art-template": ">= 1.0.0"
+  }
+}
