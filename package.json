@@ -2,10 +2,14 @@
   "name": "fis-parser-art-template",
   "description": "A parser for fis to compile artTemplate file.",
   "version": "0.1.3",
+<<<<<<< HEAD
   "author": {
     "name": "liwen",
     "email": "1127622940@qq.com"
   },
+=======
+  "author": "liwen <1127622940@qq.com>",
+>>>>>>> 298f3ba6828741649a18f4d2c2d1f4e678691a5e
   "keywords": [
     "fis"
   ],
@@ -31,6 +35,7 @@
   "bugs": {
     "url": "https://github.com/lwdgit/fis-parser-art-template/issues"
   },
+<<<<<<< HEAD
   "homepage": "https://github.com/lwdgit/fis-parser-art-template#readme",
   "gitHead": "298f3ba6828741649a18f4d2c2d1f4e678691a5e",
   "_id": "fis-parser-art-template@0.1.3",
@@ -53,4 +58,7 @@
     }
   ],
   "_resolved": "https://registry.npmjs.org/fis-parser-art-template/-/fis-parser-art-template-0.1.3.tgz"
+=======
+  "homepage": "https://github.com/lwdgit/fis-parser-art-template#readme"
+>>>>>>> 298f3ba6828741649a18f4d2c2d1f4e678691a5e
 }
