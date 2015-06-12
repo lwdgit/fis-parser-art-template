@@ -1,4 +1,6 @@
-#fis-parser-art-template
+# fis-parser-art-template ![NPM version](https://badge.fury.io/js/fis-parser-art-template.png)
+
+[![NPM Download](https://nodei.co/npm-dl/fis-parser-art-template.png?months=1)](https://www.npmjs.org/package/fis-parser-art-template)
 
 > A fis parser plugin for art-template
 
