@@ -1,0 +1,16 @@
+{
+    "title": "hello, art-template",
+    "stylesheets": ["main.css"],
+    "scripts": ["main.js"],
+    "module": {
+      "home.tpl": {
+        "title": "home page",
+        "stylesheets": ["home.css"],
+        "scripts": ["home.js"]
+      }
+    },
+    "index.tpl": {
+      "stylesheets": ["index.css"],
+      "scripts": ["index.js"]
+    }
+}

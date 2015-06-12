@@ -89,7 +89,13 @@ function initEngine(conf) {
 function render(file, data) {
     data = data || {};
     var content = template(file, data);
-    return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
+    if (content.indexOf('{Template Error}') === -1) {
+      return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
+    } else {
+      return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>'
+       + content
+       + '\r\n\t</body>\r\n</html>';
+    }
 }
 
 function readConfig(file) {
@@ -99,7 +105,11 @@ function readConfig(file) {
         if (!gData || gData.trim() == '') {
             gData = {};
         }
-        gData = eval('(' + gData + ')');
+        try {
+          gData = eval('(' + gData + ')');
+        } catch (e) {
+          throw new Error('Global Config file: ' + gJsonFile + ' parse error'); 
+        }
         Obj = {};
         listObj('', gData);
         //console.log(Obj);
@@ -117,7 +127,11 @@ function readConfig(file) {
         if (!data || data.trim() == '') {
             data = '{}';
         }
-        data = eval('(' + data + ')')
+        try {
+          data = eval('(' + data + ')')
+        } catch (e) {
+          throw new Error('Config file: ' + jsonFile + ' parse error'); 
+        }
     } else if (file.ext != '.tpl') {
         data = {};
     }
@@ -130,7 +144,7 @@ module.exports = function(content, file, conf) {
     if (!content) return '';
 
     if (content.trim() == '') {
-        return '<!doctype html><html><head><title>tpl file is empty</title></head><body>tpl file is empty</body></html>';
+        return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';
     }
     initEngine(conf);
     var data = readConfig(file);

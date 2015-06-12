@@ -1,7 +1,7 @@
 {
   "name": "fis-parser-art-template",
   "description": "A parser for fis to compile artTemplate file.",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": {
     "name": "liwen",
     "email": "1127622940@qq.com"
