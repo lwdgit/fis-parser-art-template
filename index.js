@@ -73,51 +73,44 @@ function recursiveExtend(path, data) {
     return recursiveExtend(path, data);
 }
 
-function initEngine(conf) {
-    if (template === null && !conf.hasLoaded) {
-        if (conf.native) {
-            template = require('art-template/node/template-native');
-        } else {
-            template = require('art-template');
-        }
-        template.config('extname', ''),
-            template.config('cache', false);
-        conf.hasLoaded = true;
-    }
-};
 
 function render(file, data) {
     data = data || {};
     var content = template(file, data);
     if (content.indexOf('{Template Error}') === -1) {
-      return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
+        return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
     } else {
-      return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>'
-       + content
-       + '\r\n\t</body>\r\n</html>';
+        return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>' + content + '\r\n\t</body>\r\n</html>';
     }
 }
 
-function readConfig(file) {
-    var gJsonFile = fis.project.getProjectPath() + '/config.json';
+function readGlobalConfig() {
+    var gJsonFile = fis.project.getProjectPath() + '/config.json',
+        _gData = {};
     if (fs.existsSync(gJsonFile)) {
-        gData = fs.readFileSync(gJsonFile, 'utf-8');
-        if (!gData || gData.trim() == '') {
-            gData = {};
+        _gData = fs.readFileSync(gJsonFile, 'utf-8');
+        if (!_gData || _gData.trim() == '') {
+            _gData = '{}';
         }
+
         try {
-          gData = eval('(' + gData + ')');
+            _gData = eval('(' + _gData + ')');
         } catch (e) {
-          throw new Error('Global Config file: ' + gJsonFile + ' parse error'); 
+            throw new Error('Global Config file: ' + gJsonFile + ' parse error');
         }
         Obj = {};
-        listObj('', gData);
+        listObj('', _gData);
         //console.log(Obj);
-        gData = Obj;
+        _gData = Obj;
     } else {
         //throw new Error(gJsonFile + ' not exists!');
-        gData = {};
+        _gData = {};
     }
+    
+    extend(gData, _gData, false, true);
+}
+
+function readConfig(file) {
 
     var data = null;
     var jsonFile = file.realpathNoExt.toString() + '.json',
@@ -128,17 +121,33 @@ function readConfig(file) {
             data = '{}';
         }
         try {
-          data = eval('(' + data + ')')
+            data = eval('(' + data + ')')
         } catch (e) {
-          throw new Error('Config file: ' + jsonFile + ' parse error'); 
+            throw new Error('Config file: ' + jsonFile + ' parse error');
         }
     } else if (file.ext != '.tpl') {
         data = {};
     }
-
     data = recursiveExtend(file.id, extend(data, gData[file.id]));
     return data;
 }
+
+function initEngine(conf) {
+    if (!conf.hasLoaded) {
+        if (template === null) {
+            if (conf.native) {
+                template = require('art-template/node/template-native');
+            } else {
+                template = require('art-template');
+            }
+            template.config('extname', ''),
+                template.config('cache', false);
+            conf.hasLoaded = true;
+        }
+        gData = conf.define || {};
+        readGlobalConfig();
+    }
+};
 
 module.exports = function(content, file, conf) {
     if (!content) return '';
