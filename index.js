@@ -34,18 +34,19 @@ function extend(oldObj, newObj, override, combine) {
 
 function listObj(key, obj) { //将对象降维
 
-    if (Object.prototype.toString.call(obj) !== '[object Object]' || key.indexOf('.') > -1 || /defaults$/.test(key)) {
+    //console.log(key);
+    if ((key && !/\/$/.test(key)) || key.indexOf('.') > -1 || /_defaults$/.test(key)) {
         return obj;
     }
-    key = key ? key + '/' : '';
+    key = key ? key : '';
     for (var i in obj) {
-        if (!/defaults$/.test(i) && Object.prototype.toString.call(obj[i]) !== '[object Object]') {
+        if (!/_defaults$/.test(i) && Object.prototype.toString.call(obj[i]) !== '[object Object]') {
             if (key) {
-                Obj[key + 'defaults'] = Obj[key + 'defaults'] || {};
-                Obj[key + 'defaults'][i] = obj[i];
+                Obj[key + '_defaults'] = Obj[key + '_defaults'] || {};
+                Obj[key + '_defaults'][i] = obj[i];
             } else {
-                Obj['defaults'] = Obj['defaults'] || {};
-                Obj['defaults'][i] = obj[i];
+                Obj['_defaults'] = Obj['_defaults'] || {};
+                Obj['_defaults'][i] = obj[i];
             }
 
             //console.log(i);
@@ -65,10 +66,10 @@ function listObj(key, obj) { //将对象降维
 
 function recursiveExtend(path, data) {
     if (path === '') {
-        return extend(data, gData['defaults'], false, true);
+        return extend(data, gData['_defaults'], false, true);
     }
 
-    data = extend(data, gData[path + '/defaults'], false, true);
+    data = extend(data, gData[path + '/_defaults'], false, true);
     path = path.substr(0, path.lastIndexOf('/'));
     return recursiveExtend(path, data);
 }
@@ -100,13 +101,12 @@ function readGlobalConfig() {
         }
         Obj = {};
         listObj('', _gData);
-        //console.log(Obj);
         _gData = Obj;
     } else {
         //throw new Error(gJsonFile + ' not exists!');
         _gData = {};
     }
-    
+
     extend(gData, _gData, false, true);
 }
 
@@ -144,7 +144,9 @@ function initEngine(conf) {
                 template.config('cache', false);
             conf.hasLoaded = true;
         }
-        gData = conf.define || {};
+        listObj('', conf.define || {});
+        gData = Obj;
+
         readGlobalConfig();
     }
 };
