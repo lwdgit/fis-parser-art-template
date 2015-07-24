@@ -1,6 +1,6 @@
 {
   "name": "fis-parser-art-template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "art-template parser for fis",
   "main": "index.js",
   "directories": {
