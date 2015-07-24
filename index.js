@@ -2,7 +2,6 @@
 
 var template = null;
 var fs = require('fs'),
-    fis = require('fis'),
     gData = {};
 
 
