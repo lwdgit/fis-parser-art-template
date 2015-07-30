@@ -154,6 +154,7 @@ module.exports = function(content, file, conf) {
     if (!content) return '';
 
     if (content.trim() == '') {
+        console.log(file + ' render Error!');
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';
     }
     initEngine(conf);
