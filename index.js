@@ -80,6 +80,7 @@ function render(file, data) {
     if (content.indexOf('{Template Error}') === -1) {
         return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
     } else {
+        console.log(file + ' render Error!');
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>' + content + '\r\n\t</body>\r\n</html>';
     }
 }
@@ -154,7 +155,6 @@ function initEngine(conf) {
 module.exports = function(content, file, conf) {
     if (!content) return '';
     if (content.trim() == '') {
-        console.log(file + ' render Error!');
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';
     }
     initEngine(conf);
