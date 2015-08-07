@@ -134,13 +134,14 @@ function readConfig(file) {
 function initEngine(conf) {
     if (!conf.hasLoaded) {
         if (template === null) {
-            if (conf.native) {
-                template = require('art-template/node/template-native');
+            if (conf.native || conf.engine === 'native') {
+                template = require('./artTemplate/node/template-native');
             } else {
-                template = require('art-template');
+                template = require('./artTemplate');
             }
             template.config('extname', ''),
-                template.config('cache', false);
+            template.config('cache', true);
+            template.config('projectRoot', fis.project.getProjectPath());
             conf.hasLoaded = true;
         }
         listObj('', conf.define || {});
@@ -152,7 +153,6 @@ function initEngine(conf) {
 
 module.exports = function(content, file, conf) {
     if (!content) return '';
-
     if (content.trim() == '') {
         console.log(file + ' render Error!');
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';

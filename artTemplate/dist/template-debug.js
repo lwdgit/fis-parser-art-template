@@ -713,7 +713,12 @@ defaults.parser = function (code, options) {
             // 内容直接输出 {{value}}
             } else {
 
-                code = '=' + code;
+                
+                if (args.indexOf('=') === 0) {
+                    code = '=(' + code + ',"")';
+                } else {
+                    code = '=' + code;
+                }
             }
 
             break;

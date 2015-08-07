@@ -4,12 +4,12 @@
 
 > A fis parser plugin for art-template
 
-## install
+## Install
 
    $ npm install fis-parser-art-template
 
 
-##usage
+##Usage
 
 ```javascript
 
@@ -41,8 +41,23 @@ fis.config.set('settings.parser.art-template.define', {
 
 ```
 
+```javscript
+//fis-conf.js for fis3
+
+fis.match('**.{html,tpl}', {
+    parser: fis.plugin('art-template', {
+        native: false,
+        define: {
+            title: 'Demo'
+        }
+    })
+})
+
+```
+
+
   $ fis release -d ./output
 
-## example 
+## Example 
 
 see [example](https://github.com/lwdgit/fis-parser-art-template/tree/master/example '')
