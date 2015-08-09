@@ -1,14 +1,12 @@
 {
   "name": "fis-parser-art-template",
-  "version": "1.2.0",
+  "version": "1.2.3",
   "description": "art-template parser for fis & fis3",
   "main": "index.js",
   "directories": {
     "example": "example"
   },
-  "dependencies": {
-    "art-template": "^3.0.3"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
