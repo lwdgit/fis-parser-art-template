@@ -15,35 +15,6 @@
 
 ##Usage
 
-```javascript
-
-//fis-conf.js
-
-fis.config.set('modules.parser.html', 'art-template');
-fis.config.set('modules.parser.tpl', 'art-template');
-fis.config.set('settings.parser.art-template.native', false);
-fis.config.set('roadmap.ext.tpl', 'html');
-
-//set data for tpl
-fis.config.set('settings.parser.art-template.define', {
-    "title": "hello, art-template",
-    "stylesheets": ["main.css"],
-    "scripts": ["main.js"],
-    "module/": {
-      "title": "home module",
-
-      "home.tpl": {
-        "stylesheets": ["home.css"],
-        "scripts": ["home.js"]
-      }
-    },
-    "index.tpl": {
-      "stylesheets": ["index.css"],
-      "scripts": ["index.js"]
-    }
-});
-
-```
 
 ```javscript
 //fis-conf.js for fis3
@@ -52,9 +23,24 @@ fis.match('**.{html,tpl}', {
     parser: fis.plugin('art-template', {
         native: false,
         define: {
-            title: 'Demo'
+            "title": "hello, art-template",
+            "stylesheets": ["main.css"],
+            "scripts": ["main.js"],
+            "module/": {
+              "title": "home module",
+
+              "home.tpl": {
+                "stylesheets": ["home.css"],
+                "scripts": ["home.js"]
+              }
+            },
+            "index.tpl": {
+              "stylesheets": ["index.css"],
+              "scripts": ["index.js"]
+            }
         }
-    })
+    }),
+    rExt: 'html'
 })
 
 ```
