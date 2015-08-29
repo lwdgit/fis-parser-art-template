@@ -8,6 +8,10 @@
 
    $ npm install fis-parser-art-template
 
+## Tips
+  
+ > Above v2.0.0 only support fis3 & reasy
+
 
 ##Usage
 
