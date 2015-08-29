@@ -58,6 +58,12 @@ fis.match('**.{html,tpl}', {
 
   $ fis release -d ./output
 
+## Reserved words
+
+  * noParse   true: page keep origin
+  * release   false: page will not relase
+
+
 ## Example 
 
 see [example](https://github.com/lwdgit/fis-parser-art-template/tree/master/example '')

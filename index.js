@@ -10,7 +10,7 @@ var Obj = {}; //使用全局变量是为了防止Obj也被递归
 function extend(oldObj, newObj, override, combine) {
     if (typeof oldObj === 'object' && typeof newObj === 'object') {
         for (var o in newObj) {
-            if (oldObj[o]) {
+            if (typeof oldObj[o] !== 'undefined') {
                 if (combine && oldObj[o] instanceof Array) {
                     oldObj[o] = newObj[o].concat(oldObj[o]);
                 }
