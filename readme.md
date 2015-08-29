@@ -56,4 +56,4 @@ fis.match('**.{html,tpl}', {
 
 ## Example 
 
-see [example](https://github.com/lwdgit/fis-parser-art-template/tree/master/example '')
+see [example](https://github.com/lwdgit/fis-parser-art-template/tree/reasy/example '')

@@ -2,7 +2,9 @@
 
 var template = null;
 var fs = require('fs'),
-    gData = {};
+    path = require('path'),
+    gData = {},
+    hasLoaded = false, needClean = false;
 
 
 var Obj = {}; //使用全局变量是为了防止Obj也被递归
@@ -133,7 +135,8 @@ function readConfig(file) {
 }
 
 function initEngine(conf) {
-    if (!conf.hasLoaded) {
+
+    if (!hasLoaded) {
         if (template === null) {
             if (conf.native || conf.engine === 'native') {
                 template = require('./artTemplate/node/template-native');
@@ -143,22 +146,47 @@ function initEngine(conf) {
             template.config('extname', ''),
             template.config('cache', true);
             template.config('projectRoot', fis.project.getProjectPath());
-            conf.hasLoaded = true;
+
         }
         listObj('', conf.define || {});
         gData = Obj;
 
         readGlobalConfig();
+
+        fis.on('release:end', function() {
+            var opt = fis.config.data.options,
+                dest;
+                console.log(needClean);
+            if (needClean && (dest = (opt.d || opt.dest))) {
+                fis.log.info('clean release false files...');
+                setTimeout(function() {
+                    fs.unlink(path.join(process.cwd(), dest + '/deleted'), function(err) {
+                        if (err) fis.log.warn(err)
+                        fis.log.info('success...');
+                    });
+                }, 1000);//延时1稍清理
+                
+            }  
+        });
+
+        hasLoaded = true;
     }
 };
 
 module.exports = function(content, file, conf) {
-    if (!content) return '';
-    if (content.trim() == '') {
-        return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';
-    }
     initEngine(conf);
     var data = readConfig(file);
+    //console.log(data)
+    if (data.release === false) {
+        needClean = true;
+        file.release = './deleted';
+    }
+
+    if (!content) return '';
+    if (content.trim() === '') {
+        return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>tpl file is empty</title>\r\n\t</head>\r\n\t<body>tpl file is empty</body>\r\n</html>';
+    }
+
     //console.log(data);
     return data.noParse === true ? content : render(file, data);
 };
