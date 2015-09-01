@@ -16,7 +16,7 @@
 ##Usage
 
 
-```javscript
+```javascript
 //fis-conf.js for fis3
 
 fis.match('**.{html,tpl}', {
