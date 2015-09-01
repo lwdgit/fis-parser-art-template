@@ -48,7 +48,21 @@ fis.match('**.{html,tpl}', {
     parser: fis.plugin('art-template', {
         native: false,
         define: {
-            title: 'Demo'
+            "title": "hello, art-template",
+            "stylesheets": ["main.css"],
+            "scripts": ["main.js"],
+            "module/": {
+              "title": "home module",
+
+              "home.tpl": {
+                "stylesheets": ["home.css"],
+                "scripts": ["home.js"]
+              }
+            },
+            "index.tpl": {
+              "stylesheets": ["index.css"],
+              "scripts": ["index.js"]
+            }
         }
     })
 })
