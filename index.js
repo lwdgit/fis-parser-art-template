@@ -4,7 +4,9 @@ var template = null;
 var fs = require('fs'),
     path = require('path'),
     gData = {},
-    hasLoaded = false, needClean = false;
+    hasLoaded = false,
+    needClean = false,
+    deletedFileName = '/.deleted';
 
 
 var Obj = {}; //使用全局变量是为了防止Obj也被递归
@@ -78,13 +80,17 @@ function recursiveExtend(path, data) {
 
 function render(file, data) {
     data = data || {};
-    var content = template(file, data);
-   if (template.cache) {
-      for (var cp in template.cache) {
-          file.cache.addDeps(cp);
-      }
-      template.cache = {};
-   }
+
+    template.dependencies = []; //增加dependencies,用于记录文件依赖
+
+    var content = template(file.toString(), data);
+
+    if (template.dependencies.length) { //如果有include,将被include的文件加入deps
+        template.dependencies.forEach(function(cp) {
+
+            file.cache.addDeps(cp);
+        })
+    }
     if (content.indexOf('{Template Error}') === -1) {
         return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
     } else {
@@ -93,7 +99,7 @@ function render(file, data) {
     }
 }
 
-function readGlobalConfig() {
+function readGlobalConfig(file) { //读取全局配置 config.json
     var gJsonFile = fis.project.getProjectPath() + '/config.json',
         _gData = {};
     if (fs.existsSync(gJsonFile)) {
@@ -119,7 +125,7 @@ function readGlobalConfig() {
     extend(gData, _gData, false, true);
 }
 
-function readConfig(file) {
+function readConfig(file) { //读取同名json配置
 
     var data = null;
     var jsonFile = file.realpathNoExt.toString() + '.json',
@@ -142,7 +148,7 @@ function readConfig(file) {
     return data;
 }
 
-function initEngine(conf) {
+function initEngine(conf, file) {
 
     if (!hasLoaded) {
         if (template === null) {
@@ -152,31 +158,29 @@ function initEngine(conf) {
                 template = require('./artTemplate');
             }
             template.config('extname', ''),
-            template.config('cache', true);
+                template.config('cache', false);
             template.config('projectRoot', fis.project.getProjectPath());
-
         }
         listObj('', conf.define || {});
         gData = Obj;
 
-        readGlobalConfig();
-        fis.on('release:start', function(m) {
-          console.log(m);
-        });
+        readGlobalConfig(file);
+
         fis.on('release:end', function() {
             var opt = fis.config.data.options,
                 dest;
-                
+
             if (needClean && (dest = (opt.d || opt.dest))) {
-                fis.log.info('clean release false files...');
+                fis.log.info('clean files...');
                 setTimeout(function() {
-                    fs.unlink(path.join(process.cwd(), dest + '/deleted'), function(err) {
+                    fs.unlink(path.join(process.cwd(), dest + deletedFileName), function(err) {
                         if (err) fis.log.warn(err)
-                        fis.log.info('success...');
+                        fis.log.info('clean success...');
                     });
-                }, 1000);//延时1稍清理
-                
-            }  
+                }, 1000); //延时1秒清理
+
+            }
+            needClean = false;
         });
 
         hasLoaded = true;
@@ -184,13 +188,13 @@ function initEngine(conf) {
 };
 
 module.exports = function(content, file, conf) {
-    console.log('start');
-    initEngine(conf);
+
+    initEngine(conf, file);
     var data = readConfig(file);
-    //console.log(data)
-    if (data.release === false) {
+
+    if (data.release === false) { //如果不release,将文件丢到.deleted,并添加clean标记,在release:end后清除
         needClean = true;
-        file.release = './deleted';
+        file.release = deletedFileName;
     }
 
     if (!content) return '';
@@ -199,6 +203,5 @@ module.exports = function(content, file, conf) {
     }
 
     //console.log(data);
-    console.log('render');
     return data.noParse === true ? content : render(file, data);
 };
