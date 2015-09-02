@@ -16,7 +16,7 @@
 ##Usage
 
 
-```javscript
+```javascript
 //fis-conf.js for fis3
 
 fis.match('**.{html,tpl}', {
@@ -51,7 +51,7 @@ fis.match('**.{html,tpl}', {
 ## Reserved words
 
   * noParse   true: page keep origin
-  * release   false: page will not relase
+  * release   false: page will not relase(fis-parser-art-template@2.0.0 & fis3 only)
 
 
 ## Example 
