@@ -3,6 +3,8 @@ var path = require('path');
 
 module.exports = function(template) {
 
+    template.dependencies = [];
+
     var cacheStore = template.cache;
     var defaults = template.defaults;
     var rExtname;
@@ -58,7 +60,7 @@ module.exports = function(template) {
         } else {
         	filename = path.join(from, filename);
         }
-        
+        template.dependencies.push(filename);//将被include的文件添加到dependencies
         return template.renderFile(filename, data);
     }
 
