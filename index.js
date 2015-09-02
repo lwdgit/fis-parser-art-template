@@ -79,6 +79,12 @@ function recursiveExtend(path, data) {
 function render(file, data) {
     data = data || {};
     var content = template(file, data);
+   if (template.cache) {
+      for (var cp in template.cache) {
+          file.cache.addDeps(cp);
+      }
+      template.cache = {};
+   }
     if (content.indexOf('{Template Error}') === -1) {
         return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
     } else {
@@ -104,6 +110,7 @@ function readGlobalConfig() {
         Obj = {};
         listObj('', _gData);
         _gData = Obj;
+        file.cache.addDeps(gJsonFile);
     } else {
         //throw new Error(gJsonFile + ' not exists!');
         _gData = {};
@@ -127,7 +134,8 @@ function readConfig(file) {
         } catch (e) {
             throw new Error('Config file: ' + jsonFile + ' parse error');
         }
-    } else if (file.ext != '.tpl') {
+        file.cache.addDeps(jsonFile);
+    } else {
         data = {};
     }
     data = recursiveExtend(file.id, extend(data, gData[file.id]));
@@ -152,11 +160,13 @@ function initEngine(conf) {
         gData = Obj;
 
         readGlobalConfig();
-
+        fis.on('release:start', function(m) {
+          console.log(m);
+        });
         fis.on('release:end', function() {
             var opt = fis.config.data.options,
                 dest;
-                console.log(needClean);
+                
             if (needClean && (dest = (opt.d || opt.dest))) {
                 fis.log.info('clean release false files...');
                 setTimeout(function() {
@@ -174,6 +184,7 @@ function initEngine(conf) {
 };
 
 module.exports = function(content, file, conf) {
+    console.log('start');
     initEngine(conf);
     var data = readConfig(file);
     //console.log(data)
@@ -188,5 +199,6 @@ module.exports = function(content, file, conf) {
     }
 
     //console.log(data);
+    console.log('render');
     return data.noParse === true ? content : render(file, data);
 };
