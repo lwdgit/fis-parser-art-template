@@ -99,11 +99,17 @@ function render(file, data) {
     }
 }
 
-function readGlobalConfig(file) { //读取全局配置 config.json
+function readGlobalConfig(file, conf) { //读取全局配置 config.json
+
+    gData = {};
+
+    listObj('', conf.define || {});
+    gData = Obj;
+
     var gJsonFile = fis.project.getProjectPath() + '/config.json',
         _gData = {};
     if (fs.existsSync(gJsonFile)) {
-        _gData = fs.readFileSync(gJsonFile, 'utf-8');
+        _gData = fs.readFileSync(gJsonFile, 'utf-8');//这里不能用require
         if (!_gData || _gData.trim() == '') {
             _gData = '{}';
         }
@@ -116,7 +122,7 @@ function readGlobalConfig(file) { //读取全局配置 config.json
         Obj = {};
         listObj('', _gData);
         _gData = Obj;
-        file.cache.addDeps(gJsonFile);
+        file.cache.addDeps(gJsonFile);//移除全局配置编译依赖
     } else {
         //throw new Error(gJsonFile + ' not exists!');
         _gData = {};
@@ -148,6 +154,9 @@ function readConfig(file) { //读取同名json配置
     return data;
 }
 
+
+
+
 function initEngine(conf, file) {
 
     if (!hasLoaded) {
@@ -161,10 +170,8 @@ function initEngine(conf, file) {
                 template.config('cache', false);
             template.config('projectRoot', fis.project.getProjectPath());
         }
-        listObj('', conf.define || {});
-        gData = Obj;
-
-        readGlobalConfig(file);
+        
+        
 
         fis.on('release:end', function() {
             var opt = fis.config.data.options,
@@ -185,11 +192,16 @@ function initEngine(conf, file) {
 
         hasLoaded = true;
     }
+
+    
 };
 
 module.exports = function(content, file, conf) {
-
+ 
     initEngine(conf, file);
+
+    readGlobalConfig(file, conf);
+
     var data = readConfig(file);
 
     if (data.release === false) { //如果不release,将文件丢到.deleted,并添加clean标记,在release:end后清除
