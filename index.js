@@ -145,6 +145,10 @@ function initEngine(conf) {
             template.config('projectRoot', fis.project.getProjectPath());
             conf.hasLoaded = true;
         }
+        template.config('openTag', conf.openTag || '{{');
+        template.config('closeTag', conf.closeTag || '}}');
+        template.config('compress', conf.compress === undefined ? false : !!conf.compress);
+        
         listObj('', conf.define || {});
         gData = Obj;
 
