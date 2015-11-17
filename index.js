@@ -159,20 +159,21 @@ function readConfig(file) { //读取同名json配置
 
 function initEngine(conf, file) {
 
-    if (!hasLoaded) {
-        if (template === null) {
-            if (conf.native || conf.engine === 'native') {
-                template = require('./artTemplate/node/template-native');
-            } else {
-                template = require('./artTemplate');
-            }
-            template.config('extname', ''),
-                template.config('cache', false);
-            template.config('projectRoot', fis.project.getProjectPath());
+    if (template === null) {
+        if (conf.native || conf.engine === 'native') {
+            template = require('./artTemplate/node/template-native');
+        } else {
+            template = require('./artTemplate');
         }
+        template.config('extname', ''),
+        template.config('cache', false);
+        template.config('projectRoot', fis.project.getProjectPath());
+    }
+    template.config('openTag', conf.openTag || '{{');
+    template.config('closeTag', conf.closeTag || '}}');
+    template.config('compress', conf.compress === undefined ? false : !!conf.compress);
         
-        
-
+    if (!hasLoaded) {
         fis.on('release:end', function() {
             var opt = fis.config.data.options,
                 dest;
@@ -181,7 +182,7 @@ function initEngine(conf, file) {
                 fis.log.info('clean files...');
                 setTimeout(function() {
                     fs.unlink(path.join(process.cwd(), dest + deletedFileName), function(err) {
-                        if (err) fis.log.warn(err)
+                        if (err) fis.log.warn(err);
                         fis.log.info('clean success...');
                     });
                 }, 1000); //延时1秒清理
@@ -192,8 +193,6 @@ function initEngine(conf, file) {
 
         hasLoaded = true;
     }
-
-    
 };
 
 module.exports = function(content, file, conf) {
