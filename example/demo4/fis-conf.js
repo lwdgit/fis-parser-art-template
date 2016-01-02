@@ -21,10 +21,8 @@ fis.config.set('settings.parser.art-template.define', {
 
 */
 
-fis.hook('test', {
-  test: true
-});
-/*
+
+
 fis.match('**.tpl', {
   parser: fis.plugin('art-template', {
     native: false,
@@ -53,4 +51,3 @@ fis.match('**.tpl', {
 });
 
 fis.config.set('project.exclude', 'module/common/**');
-*/
