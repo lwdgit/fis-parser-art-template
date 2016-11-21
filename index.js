@@ -166,7 +166,9 @@ function readConfig(file) { //读取同名json配置
 }
 
 
-
+function processLayout(layout , file){
+	console.log(file.toString());
+}
 
 function initEngine(conf, file) {
 
@@ -182,7 +184,13 @@ function initEngine(conf, file) {
     }
     template.config('openTag', conf.openTag || '{{');
     template.config('closeTag', conf.closeTag || '}}');
-    template.config('compress', conf.compress === undefined ? false : !!conf.compress);
+    template.config('compress', !!conf.compress);
+
+	if(conf.layout){
+		processLayout(conf.layout , file);
+	}
+
+
         
     if (!hasLoaded) {
         fis.on('release:end', function() {
