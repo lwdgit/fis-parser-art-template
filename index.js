@@ -83,6 +83,17 @@ function render(file, data) {
 
     template.dependencies = []; //增加dependencies,用于记录文件依赖
 
+	if(file.ext === '.html'){
+		fis.log.info('[compile]: ' + file.subpath);
+	}
+
+	data['__filename__'] =  file.filename ;
+	data['__ext__'] =  file.ext ;
+	data['__basename__'] =  file.basename ;
+	data['__dirname__'] =  file.dirname ;
+	data['__realpath__'] =  file.realpath ;
+
+
     var content = template(file.toString(), data);
 
     if (template.dependencies.length) { //如果有include,将被include的文件加入deps
