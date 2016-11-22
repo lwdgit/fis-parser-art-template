@@ -6,6 +6,7 @@ var fs = require('fs'),
     gData = {},
     hasLoaded = false,
     needClean = false,
+	layoutFile = null ,
     deletedFileName = '/.deleted';
 
 
@@ -83,31 +84,63 @@ function render(file, data) {
 
     template.dependencies = []; //增加dependencies,用于记录文件依赖
 
-	if(file.ext === '.html'){
-		fis.log.info('[compile]: ' + file.subpath);
-	}
-
-	data['__filename__'] =  file.filename ;
-	data['__ext__'] =  file.ext ;
-	data['__basename__'] =  file.basename ;
-	data['__dirname__'] =  file.dirname ;
-	data['__realpath__'] =  file.realpath ;
+	data['__fis_file'] = file ;
 
 
-    var content = template(file.toString(), data);
+	var content = template(file.toString() , data);
 
     if (template.dependencies.length) { //如果有include,将被include的文件加入deps
-        template.dependencies.forEach(function(cp) {
 
+        template.dependencies.forEach(function(cp) {
             file.cache.addDeps(cp);
-        })
+        });
+
     }
+
+	if(layoutFile){
+		//var layoutContent = fs.readFileSync(layoutFile, 'utf-8');//这里不能用require
+		var layoutContent = processLayout(file , data);
+
+		content = layoutContent.replace(/<!--BODY_PLACEHOLDER-->/gim , content);
+	}
+
+
     if (content.indexOf('{Template Error}') === -1) {
-        return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
-    } else {
+        return content ;
+    } 
+	else {
         console.log(file + ' render Error!');
+        console.warn(content);
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>' + content + '\r\n\t</body>\r\n</html>';
     }
+}
+
+function processLayout(file , data){
+
+	if ( fs.existsSync(layoutFile) ) {
+		var layoutContent = template(layoutFile , data);
+
+		if (template.dependencies.length) { //如果有include,将被include的文件加入deps
+
+			template.dependencies.forEach(function(cp) {
+				file.cache.addDeps(cp);
+			});
+
+		}
+
+		if (layoutContent.indexOf('{Template Error}') === -1) {
+			return layoutContent ;
+		} 
+		else {
+			console.log('layout render Error!');
+			console.warn(layoutContent);
+			return '{Template Error}' ;
+		}
+
+
+	}
+
+	return '{Template Error}' ;
 }
 
 function readGlobalConfig(file, conf) { //读取全局配置 config.json
@@ -166,10 +199,6 @@ function readConfig(file) { //读取同名json配置
 }
 
 
-function processLayout(layout , file){
-	console.log(file.toString());
-}
-
 function initEngine(conf, file) {
 
     if (template === null) {
@@ -179,7 +208,7 @@ function initEngine(conf, file) {
             template = require('./artTemplate');
         }
         template.config('extname', ''),
-        template.config('cache', false);
+        template.config('cache', true);
         template.config('projectRoot', fis.project.getProjectPath());
     }
     template.config('openTag', conf.openTag || '{{');
@@ -187,7 +216,7 @@ function initEngine(conf, file) {
     template.config('compress', !!conf.compress);
 
 	if(conf.layout){
-		processLayout(conf.layout , file);
+		layoutFile = fis.project.getProjectPath() + conf.layout ;
 	}
 
 
@@ -213,6 +242,7 @@ function initEngine(conf, file) {
         hasLoaded = true;
     }
 };
+
 
 module.exports = function(content, file, conf) {
  

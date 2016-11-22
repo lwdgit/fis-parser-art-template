@@ -1,3 +1,24 @@
+# fis3-parser-art-template
+> 增强了以下几处：
+> 
+1. 文件编译时，传入fis的file对象，对象命名为__fis_file.filename，在页面文件中，可以使用类似`{{__fis_file.filename}}`来取得文件名，或者其他file信息；
+2. fis-conf.js的打包时的参数，增加了layout 
+`fis.match('**.html', {
+	parser: fis.plugin('art-template', {
+		layout : '/comm/layout.tpl' ,...
+	})
+});`
+layout.tpl:
+`{{include '/comm/header.html'}}
+
+<!--BODY_PLACEHOLDER-->
+
+{{include '/comm/footer.html'}}`
+ 
+ 
+ 
+
+
 # fis-parser-art-template ![NPM version](https://badge.fury.io/js/fis-parser-art-template.png)
 
 [![NPM Download](https://nodei.co/npm-dl/fis-parser-art-template.png?months=1)](https://www.npmjs.org/package/fis-parser-art-template)
