@@ -97,16 +97,15 @@ function render(file, data) {
 
     }
 
-	if(layoutFile){
-		//var layoutContent = fs.readFileSync(layoutFile, 'utf-8');//这里不能用require
-		var layoutContent = processLayout(file , data);
-
-		content = layoutContent.replace(/<!--BODY_PLACEHOLDER-->/gim , content);
+	if(data.__layout){
+		data['__body_placeholder'] = content ;
+		layoutFile = fis.project.getProjectPath() + data.__layout ;
+		content = processLayout(file , data);
 	}
 
 
     if (content.indexOf('{Template Error}') === -1) {
-        return content ;
+        return content.replace(/([\n\r])(\s*)\1/g, '$1$1') ;
     } 
 	else {
         console.log(file + ' render Error!');
@@ -208,16 +207,12 @@ function initEngine(conf, file) {
             template = require('./artTemplate');
         }
         template.config('extname', ''),
-        template.config('cache', true);
+        template.config('cache', false);
         template.config('projectRoot', fis.project.getProjectPath());
     }
     template.config('openTag', conf.openTag || '{{');
     template.config('closeTag', conf.closeTag || '}}');
     template.config('compress', !!conf.compress);
-
-	if(conf.layout){
-		layoutFile = fis.project.getProjectPath() + conf.layout ;
-	}
 
 
         

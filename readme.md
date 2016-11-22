@@ -2,12 +2,16 @@
 > 增强了以下几处：
 > 
 1. 文件编译时，传入fis的file对象，对象命名为**`__fis_file`** ，在页面文件中，可以使用类似**`{{__fis_file.filename}}`**来取得文件名，或者其他file信息；
-2. fis-conf.js的打包时的参数，增加了**layout** 。
+2. fis-conf.js的打包时的参数，增加了**__layout** 。
 >例：
 ```javascript
 fis.match('**.html', {
 	parser: fis.plugin('art-template', {
-		layout : '/comm/layout.tpl' ,...
+		...
+		define: {
+			__layout: '/comm/layout.html',
+			...
+		}
 	})
 });
 ```
@@ -17,7 +21,7 @@ fis.match('**.html', {
 > 
 > {{include '/comm/header.html'}}
 > 
-> `<!--BODY_PLACEHOLDER-->`
+> `{{#__body_placeholder}}`
 > 
 > {{include '/comm/footer.html'}}
  　
