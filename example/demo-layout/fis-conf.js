@@ -16,9 +16,9 @@ fis.hook('commonjs', {
 	baseUrl: '.',
 	extList: ['.ts', '.tsx'],
 	/*paths: {
-		$: 'lib/jquery-3.1.1',
-		react: 'lib/react'
-	}*/
+	 $: 'lib/jquery-3.1.1',
+	 react: 'lib/react'
+	 }*/
 });
 
 
@@ -51,18 +51,25 @@ fis.match('{/@types/**.*,/mock/**.*}', {
 });
 
 
-var js = null;
-fis.match('{**.html,**.tpl,/js/config.js}', {
+var js = ['/lib/plugins.js'];
+fis.match('{**.html,/js/config.js}', {
 	parser: fis.plugin('art-template', {
 		//native: true, //默认为false，即简单语法模式
 		//openTag: '<%', //默认为{{
 		//closeTag: '%>',//默认为}}
 		compress: false,//默认为false
-		layout : '/comm/layout.tpl' ,
+
 		define: {
 			js: js,
+			bodyType: 'whiteFrame',
+			__layout: '/comm/layout.html',
+			'page/':{
+				'withoutLayout.html' : {
+					__layout: null
+				}
+			},
 			'comm/': {
-				//release: false
+				release: false
 			}
 		}
 	})

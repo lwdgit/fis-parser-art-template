@@ -1,4 +1,8 @@
-<script src="/lib/plugins.js"></script><!--ignore-->
+{{if js}}
+{{each js}}
+<script src="{{$value}}"></script><!--ignore-->
+{{/each}}
+{{/if}}
 
 <!--SCRIPT_PLACEHOLDER-->
 
