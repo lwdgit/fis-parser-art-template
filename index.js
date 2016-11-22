@@ -6,7 +6,6 @@ var fs = require('fs'),
     gData = {},
     hasLoaded = false,
     needClean = false,
-	layoutFile = null ,
     deletedFileName = '/.deleted';
 
 
@@ -97,10 +96,11 @@ function render(file, data) {
 
     }
 
-	if(data.__layout){
+	if(content.indexOf('{Template Error}') === -1 && data.__layout){
 		data['__body_placeholder'] = content ;
-		layoutFile = fis.project.getProjectPath() + data.__layout ;
-		content = processLayout(file , data);
+
+		var layoutFile = fis.project.getProjectPath() + data.__layout ;
+		content = processLayout(file , data , layoutFile);
 	}
 
 
@@ -109,12 +109,11 @@ function render(file, data) {
     } 
 	else {
         console.log(file + ' render Error!');
-        console.warn(content);
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>' + content + '\r\n\t</body>\r\n</html>';
     }
 }
 
-function processLayout(file , data){
+function processLayout(file , data , layoutFile){
 
 	if ( fs.existsSync(layoutFile) ) {
 		var layoutContent = template(layoutFile , data);
@@ -131,8 +130,7 @@ function processLayout(file , data){
 			return layoutContent ;
 		} 
 		else {
-			console.log('layout render Error!');
-			console.warn(layoutContent);
+			console.log('layout file ' + layoutFile + ' render Error!');
 			return '{Template Error}' ;
 		}
 
