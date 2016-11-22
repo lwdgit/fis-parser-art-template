@@ -9,18 +9,22 @@
 	})
 });`
 
-## layout.tpl: ##
+#### layout.tpl: 
     
-```javascript
-{{include '/comm/header.html'}}
-
-<!--BODY_PLACEHOLDER-->
-
-{{include '/comm/footer.html'}}
+> 
+> {{include '/comm/header.html'}}
+> 
+> `<!--BODY_PLACEHOLDER-->`
+> 
+> {{include '/comm/footer.html'}}
+ 　
  
  
- 
 
+　
+　
+
+----------
 
 # fis-parser-art-template ![NPM version](https://badge.fury.io/js/fis-parser-art-template.png)
 
