@@ -8,12 +8,15 @@
 		layout : '/comm/layout.tpl' ,...
 	})
 });`
-layout.tpl:
-`{{include '/comm/header.html'}}
+
+## layout.tpl: ##
+    
+```javascript
+{{include '/comm/header.html'}}
 
 <!--BODY_PLACEHOLDER-->
 
-{{include '/comm/footer.html'}}`
+{{include '/comm/footer.html'}}
  
  
  
