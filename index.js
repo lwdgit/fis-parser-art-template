@@ -83,20 +83,61 @@ function render(file, data) {
 
     template.dependencies = []; //增加dependencies,用于记录文件依赖
 
-    var content = template(file.toString(), data);
+	data['__fis_file'] = file ;
+
+
+	var content = template(file.toString() , data);
 
     if (template.dependencies.length) { //如果有include,将被include的文件加入deps
-        template.dependencies.forEach(function(cp) {
 
+        template.dependencies.forEach(function(cp) {
             file.cache.addDeps(cp);
-        })
+        });
+
     }
+
+	if(content.indexOf('{Template Error}') === -1 && data.__layout){
+		data['__body_placeholder'] = content ;
+
+		var layoutFile = fis.project.getProjectPath() + data.__layout ;
+		content = processLayout(file , data , layoutFile);
+	}
+
+
     if (content.indexOf('{Template Error}') === -1) {
-        return content.replace(/([\n\r])(\s*)\1/g, '$1$1');
-    } else {
+        return content.replace(/([\n\r])(\s*)\1/g, '$1$1') ;
+    } 
+	else {
         console.log(file + ' render Error!');
         return '<!doctype html>\r\n<html>\r\n\t<head>\r\n\t\t<title>Template Error</title>\r\n\t</head>\r\n\t<body>' + content + '\r\n\t</body>\r\n</html>';
     }
+}
+
+function processLayout(file , data , layoutFile){
+
+	if ( fs.existsSync(layoutFile) ) {
+		var layoutContent = template(layoutFile , data);
+
+		if (template.dependencies.length) { //如果有include,将被include的文件加入deps
+
+			template.dependencies.forEach(function(cp) {
+				file.cache.addDeps(cp);
+			});
+
+		}
+
+		if (layoutContent.indexOf('{Template Error}') === -1) {
+			return layoutContent ;
+		} 
+		else {
+			console.log('layout file ' + layoutFile + ' render Error!');
+			return '{Template Error}' ;
+		}
+
+
+	}
+
+	return '{Template Error}' ;
 }
 
 function readGlobalConfig(file, conf) { //读取全局配置 config.json
@@ -155,8 +196,6 @@ function readConfig(file) { //读取同名json配置
 }
 
 
-
-
 function initEngine(conf, file) {
 
     if (template === null) {
@@ -171,7 +210,9 @@ function initEngine(conf, file) {
     }
     template.config('openTag', conf.openTag || '{{');
     template.config('closeTag', conf.closeTag || '}}');
-    template.config('compress', conf.compress === undefined ? false : !!conf.compress);
+    template.config('compress', !!conf.compress);
+
+
         
     if (!hasLoaded) {
         fis.on('release:end', function() {
@@ -194,6 +235,7 @@ function initEngine(conf, file) {
         hasLoaded = true;
     }
 };
+
 
 module.exports = function(content, file, conf) {
  
